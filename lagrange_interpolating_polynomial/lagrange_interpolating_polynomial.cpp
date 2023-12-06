@@ -2,13 +2,15 @@
 #include <iostream>
 #include <math.h>
 #include <string>
+#include <fstream>
+
 #define DEBUG = false
 
-void print(double* array, int size)
+void print(double* array, double* array2, int size)
 {
 	for (size_t i = 0; i < size; i++)
 	{
-		std::cout << array[i] << " \n";
+		std::cout << array[i] << " " << array2[i] << " \n";
 	}
 }
 
@@ -38,32 +40,57 @@ double function_of_x(double x)
 	return pow(x, -(1.0f / 2.0f));
 }
 
-int main()
+int main(int argc, char** argv)
 {
-	int number_of_N = 100;
-	int size = 20;
+	int size = std::stoi(argv[1]);
+	double x0 = std::stod(argv[2]);
+	double step = std::stod(argv[3]);
+	int number_of_N = std::stoi(argv[4]);
+	//int size = 20;
+	//double x0 = 0.1f;
+	//double step = 0.1f;
+	//int number_of_N = 100;
 	double* pointsX = new double[size];
 	double* pointsY = new double[size];
-	double step = 0.1;
-	double x = step;
+	double* new_pointsX = new double[number_of_N];
+	double* new_pointsY = new double[number_of_N];
+	double x = x0;
+	
 
 	for (int i = 0; i < size; i++)
 	{
-		pointsX[i] = function_of_x(x);
+		pointsY[i] = function_of_x(x);
 		pointsX[i] = x;
 		x += step;
 	}
-	
-	x = step;
-	for (int i = 0; i < number_of_N; i++)
+	double stepInterpolation = (pointsX[size-1] - pointsX[0])/number_of_N;
+
+	print(pointsX, pointsY, size);
+
+
+#pragma omp parallel
 	{
-		lagrange(pointsX, pointsX, size, x);
-		x += step;
+#pragma omp for
+		for (int i = 0; i < number_of_N; i++)
+		{
+			new_pointsX[i] = i*((pointsX[size - 1] - pointsX[0]) / number_of_N) + x0;
+			new_pointsY[i] = lagrange(pointsX, pointsY, size, new_pointsX[i]);
+		}
 	}
 
-#ifdef DEBUG == true
-	print(pointsX, size);
-#endif // DEBUG
+	//print(new_pointsX, new_pointsY, number_of_N);
+
+	// Create and open a text file
+	std::ofstream MyFile("points.txt");
+
+	// Write to the file
+	for (size_t i = 0; i < number_of_N; i++)
+	{
+		MyFile << new_pointsX[i] << " " << new_pointsY[i] << "\n";
+	}
+
+	// Close the file
+	MyFile.close();
 
 
 	return 0;

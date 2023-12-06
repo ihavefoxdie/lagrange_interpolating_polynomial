@@ -6,3 +6,7 @@
 /.vs/lagrange_interpolating_polynomial
 /lagrange_interpolating_polynomial/x64/Debug
 /lagrange_interpolating_polynomial/lagrange_interpolating_polynomial.vcxproj.user
+/Debug
+/lagrange_interpolating_polynomial/Debug/lagrange.b6e94512.tlog
+/lagrange_interpolating_polynomial/Debug
+/lagrange_interpolating_polynomial/points.txt
