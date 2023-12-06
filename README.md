@@ -1,1 +1,1 @@
-# lagrange_interpolating_polynomial
+# Lagrange interpolating polynomial backend application.
