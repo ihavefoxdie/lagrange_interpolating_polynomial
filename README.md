@@ -1,1 +1,1 @@
-# Lagrange interpolating polynomial backend application.
+# Lagrange interpolating polynomial backend application
